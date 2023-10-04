@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import server from './server';
 
-const Welcome = () => {
+const Welcome = ({setLoading}) => {
     const [add, setAdd] = useState("your Address")
     const [pKey, setPKey] = useState("your Private Key")
 
     const generate = async () => {
+        setLoading(true);
         const response = await server.get("/generate")
         const addresses = response.data.addresses;
         console.log(addresses)
         setPKey(addresses.privateKey);
-        setAdd(addresses.address)
+        setAdd(addresses.address);
+        setLoading(false);
     }
   return (
     <div className='container wallet'>

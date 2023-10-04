@@ -5,9 +5,9 @@ import { utf8ToBytes, bytesToHex, toHex, hexToBytes } from "ethereum-cryptograph
 import server from './server';
 
 
-function Sign({ txToSign, setTxToSign, setBalance }) {
-    const [pKey, setPKey] = useState("db86257a9228c640b5e21cbade927772c7ff8a52233cd5a3591620668a68fde4");
-    const [loading, setLoading] = useState(false);
+function Sign({ txToSign, setTxToSign, setBalance , setLoading}) {
+    const [pKey, setPKey] = useState("put your private Key to sign");
+    // const [loading, setLoading] = useState(false);
 
     // const sender  = txToSign.sender;
     // const amount = txToSign.amount;
@@ -23,7 +23,7 @@ function Sign({ txToSign, setTxToSign, setBalance }) {
             nonceString = nonce.toString;
             // nonceString = "8";
         } catch (err) {
-
+            setLoading(false)
             if (err?.response?.data) alert(err.response.data.message);
              else console.log(err);
             return;
@@ -34,13 +34,10 @@ function Sign({ txToSign, setTxToSign, setBalance }) {
         const message = JSON.stringify(txToSign) + nonceString;
         console.log("message : ", message)
         const msgHash = keccak256(utf8ToBytes(message))
-        const txSigned = await sign(msgHash, pKey, { recovered: true });
-
-        // const publicKey = getPublicKey(pKey);
-        console.log("txsigned : ", txSigned)
-        console.log("msgHash : ", msgHash)
-
         try {
+            const txSigned = await sign(msgHash, pKey, { recovered: true });
+            console.log("txsigned : ", txSigned)
+            console.log("msgHash : ", msgHash)
             const {
                 data: { balance },
             } = await server.post(`send`, {
@@ -52,9 +49,9 @@ function Sign({ txToSign, setTxToSign, setBalance }) {
             setBalance(balance);
             setLoading(false);
             setTxToSign(null)
-        } catch (ex) {
-
-            alert(ex.response.data.message);
+        } catch (err) {
+            console.log(err)
+            alert(err.response.data.message);
             setLoading(false);
         }
         setLoading(false);
