@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const server = axios.create({
-  baseURL: "./api",
+  baseURL: "https://alchemy-ecdsa.vercel.app/",
 });
 
 export default server;
